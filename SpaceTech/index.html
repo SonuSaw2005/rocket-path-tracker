@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="3D Space Technology Simulation Dashboard with Live Backend Data" />
+  <title>Space Technology</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.121.1/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="vanta-bg"></div>
+
+  <div class="dashboard">
+    <h1>System Dashboard</h1>
+
+    <div class="status">
+      <span><span class="dot safe"></span> Safe</span> |
+      <span><span class="dot warning"></span> Warning</span> |
+      <span><span class="dot critical"></span> Critical</span>
+    </div>
+
+    <div class="panel">
+      <div class="form-group">
+        <label>Site:</label>
+        <input type="text" id="site" placeholder="Enter site name">
+      </div>
+      <div class="form-group">
+        <label>Velocity:</label>
+        <input type="number" id="velocity" placeholder="Enter velocity">
+      </div>
+      <div class="form-group">
+        <label>Angle:</label>
+        <input type="number" id="angle" placeholder="Enter angle">
+      </div>
+      <div class="form-group">
+        <label>Orbit:</label>
+        <select id="orbit">
+          <option value="LEO">Low Earth Orbit</option>
+          <option value="MEO">Medium Earth Orbit</option>
+          <option value="GEO">Geostationary Orbit</option>
+        </select>
+      </div>
+      <button id="sendBtn">Run Simulation</button>
+      <p>Live metrics, charts and alerts will appear here:</p>
+      <pre id="output"></pre>
+    </div>
+
+    <div id="close-btn">×</div>
+  </div>
+
+  <div class="home">
+    <h2>Welcome Back to Home!</h2>
+    <p>Click "Run Simulation" again to restart.</p>
+  </div>
+
+  <canvas id="rocketGraph" width="300" height="200"></canvas>
+  <canvas id="miniEarth" width="300" height="200"></canvas>
+  
+  <canvas id="velocityGraph" width="300" height="200"></canvas>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

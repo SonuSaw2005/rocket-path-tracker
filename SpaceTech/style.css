@@ -1,0 +1,158 @@
+/* ============================
+    FULLSCREEN BACKGROUND
+============================ */
+#vanta-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: black;
+}
+
+/* ============================
+    DASHBOARD STYLING
+============================ */
+.dashboard {
+  color: white;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  position: relative;
+  z-index: 10; /* Keep on top of canvas */
+}
+
+/* ============================
+    STATUS INDICATORS
+============================ */
+.status {
+  margin-top: 10px;
+}
+
+.status .dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.dot.safe { background-color: #4caf50; }
+.dot.warning { background-color: #ff9800; }
+.dot.critical { background-color: #f44336; }
+
+.glow {
+  box-shadow: 0 0 10px 4px currentColor;
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); opacity: 1; }
+  to   { transform: scale(1.3); opacity: 0.7; }
+}
+
+/* ============================
+    PANEL
+============================ */
+.panel {
+  margin-top: 20px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* ============================
+    INPUT FIELDS
+============================ */
+input, select {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-top: 5px;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #00aaff;
+  box-shadow: 0 0 5px #00aaff;
+}
+
+/* ============================
+    CLOSE BUTTON
+============================ */
+#close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  z-index: 20; /* always above everything */
+}
+
+#close-btn:hover {
+  color: red;
+  transform: scale(1.2);
+}
+
+/* ============================
+    HOME SECTION
+============================ */
+.home {
+  display: none;
+  text-align: center;
+  margin-top: 40px;
+  font-size: 1.5rem;
+  color: white;
+  z-index: 10;
+  position: relative;
+}
+
+/* ============================
+    GRAPHS & DISPLAYS
+============================ */
+#rocketGraph, #miniEarth, #velocityGraph {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  z-index: 10;
+  border: 1px solid rgba(0, 170, 255, 0.4);
+}
+
+#rocketGraph {
+  top: 20px;
+  right: 20px;
+  padding: 5px;
+}
+
+#miniEarth {
+  top: 240px;
+  right: 20px;
+}
+
+/* NEW: Style for the velocity graph */
+#velocityGraph {
+  bottom: 150px;
+  right: 20px;
+  padding: 5px;
+  border-color: rgba(255, 100, 0, 0.4);
+}
+
+
+/* ============================
+    RESPONSIVE
+============================ */
+@media (max-width: 768px) {
+  .dashboard { font-size: 0.9rem; padding: 10px; }
+  .panel { padding: 8px; }
+  /* Hide graphs on small screens to avoid clutter */
+  #rocketGraph, #miniEarth, #velocityGraph { display: none; }
+}
