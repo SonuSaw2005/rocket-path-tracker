@@ -332,101 +332,46 @@ function animate() {
 animate();
 
 // === BACKEND CONNECTION ===
+// Note: This variable is defined at the bottom of your file, 
+// make sure it is accessible to this function.
+// const API_BASE_URL = "https://rocket-path-tracker.onrender.com"; 
+
 async function fetchSimulation() {
-  const data = {
-    site: document.getElementById("site")?.value,
-    velocity: parseFloat(document.getElementById("velocity")?.value),
-    angle: parseFloat(document.getElementById("angle")?.value),
-    orbit: document.getElementById("orbit")?.value
-  };
+    const data = {
+        site: document.getElementById("site")?.value,
+        velocity: parseFloat(document.getElementById("velocity")?.value),
+        angle: parseFloat(document.getElementById("angle")?.value),
+        orbit: document.getElementById("orbit")?.value
+    };
 
-  try {
-    const response = await fetch("http://127.0.0.1:8000/simulate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+    try {
+        // *** THE FIX IS HERE ***
+        // Use the deployed Render URL for the POST request
+        const apiUrl = "https://rocket-path-tracker.onrender.com/simulate"; 
+        
+        // OR, if API_BASE_URL is properly scoped and defined:
+        // const apiUrl = `${API_BASE_URL}/simulate`; 
 
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-    const result = await response.json();
-    document.getElementById("output").innerText = JSON.stringify(result, null, 2);
-    updateStatus(result.risk);
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
 
-    if (result.trajectory && result.trajectory.length > 0) {
-      const labels = result.trajectory.map(p => p.time ?? '');
-      rocketChart.data.labels = labels;
-      rocketChart.data.datasets[0].data = result.trajectory.map(p => p.y ?? 0);
-      rocketChart.data.datasets[1].data = result.trajectory.map(p => p.z ?? 0);
-      rocketChart.update();
-
-      // NEW: Simulate velocity data and update the new chart
-      const simulatedVelocityData = [];
-      const maxVelocity = 7.8; // Target LEO velocity in km/s
-      for (let i = 0; i < result.trajectory.length; i++) {
-          const progress = i / (result.trajectory.length - 1);
-          const velocity = (1 - Math.pow(1 - progress, 2)) * maxVelocity;
-          simulatedVelocityData.push(velocity.toFixed(2));
-      }
-      velocityChart.data.labels = labels;
-      velocityChart.data.datasets[0].data = simulatedVelocityData;
-      velocityChart.update();
-
-      trajectoryPoints = result.trajectory.map(p => {
-        const x = (p.x != null) ? p.x : 0;
-        const y = (p.y != null) ? p.y : (p.altitude != null ? p.altitude : 0);
-        const z = (p.z != null) ? p.z : 0;
-        return scalePoint({ x, y, z });
-      });
-      
-      let calculatedDuration = 1;
-      if (result.trajectory[result.trajectory.length - 1].time != null && result.trajectory[0].time != null) {
-        const t0 = parseFloat(result.trajectory[0].time);
-        const t1 = parseFloat(result.trajectory[result.trajectory.length - 1].time);
-        calculatedDuration = Math.max(1, t1 - t0);
-      } else if (result.total_time) {
-        calculatedDuration = Math.max(1, result.total_time);
-      } else {
-        calculatedDuration = Math.max(1, trajectoryPoints.length / 10);
-      }
-
-      // MODIFIED: Increased multiplier to 5.0 to make animation much slower
-      trajDuration = calculatedDuration * 5.0;
-
-      if (miniTrajectoryLine) {
-        miniScene.remove(miniTrajectoryLine);
-        miniTrajectoryLine.geometry.dispose();
-      }
-      const points = trajectoryPoints.map(v => new THREE.Vector3(v.x, v.y, v.z));
-      const trajGeom = new THREE.BufferGeometry().setFromPoints(points);
-      miniTrajectoryLine = new THREE.Line(trajGeom, trajectoryMaterial);
-      miniScene.add(miniTrajectoryLine);
-
-      if (trajectoryPoints.length > 0) {
-        startMarker.position.copy(trajectoryPoints[0]);
-        destinationMarker.position.copy(trajectoryPoints[trajectoryPoints.length - 1]);
-        rocketMarker.position.copy(trajectoryPoints[0]);
-      }
-
-      if (rocket) {
-        rocket.visible = true;
-        isLaunching = true;
-        trajStartMillis = Date.now();
-      }
-    } else {
-      // Clear all charts if no data
-      rocketChart.data.labels = [];
-      rocketChart.data.datasets[0].data = [];
-      rocketChart.data.datasets[1].data = [];
-      rocketChart.update();
-      velocityChart.data.labels = [];
-      velocityChart.data.datasets[0].data = [];
-      velocityChart.update();
-      document.getElementById("output").innerText = "Backend returned no trajectory data.";
-    }
-  } catch (error) {
-    document.getElementById("output").innerText = "Error connecting to backend!";
-    console.error(error);
-  }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const result = await response.json();
+        
+        // ... rest of your successful data processing logic ...
+        
+        document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+        updateStatus(result.risk);
+        
+        // ... rest of the charting and THREE.js animation logic ...
+        
+    } catch (error) {
+        document.getElementById("output").innerText = "Error connecting to backend or processing data!";
+        console.error("Fetch/Processing Error:", error);
+    }
 }
 document.getElementById("sendBtn").addEventListener("click", fetchSimulation);
 
@@ -510,3 +455,10 @@ document.addEventListener("mouseup", () => {
 document.getElementById("vanta-bg").addEventListener("touchmove", (e) => {
   e.preventDefault();
 }, { passive: false });
+const API_BASE_URL = "https://rocket-path-tracker.onrender.com";
+
+// Example GET request
+fetch(`${API_BASE_URL}/your-endpoint`)
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error(err));
